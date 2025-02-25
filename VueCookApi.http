@@ -1,0 +1,6 @@
+@VueCookApi_HostAddress = http://localhost:5139
+
+GET {{VueCookApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

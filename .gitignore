@@ -1,0 +1,58 @@
+# Fichiers binaires et dépendances
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.nuget.cache
+*.nuget.props
+*.nuget.targets
+*.nupkg
+*.snupkg
+*.vs/
+.vscode/
+.vsconfig
+
+# Configuration des IDE
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.csproj.user
+
+# Fichiers de logs et de débogage
+*.log
+logs/
+Debug/
+Release/
+
+# Secrets et fichiers sensibles
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+appsettings.Staging.json
+secrets.json
+
+# Migration Entity Framework
+Migrations/
+
+# Cache, artefacts et autres fichiers temporaires
+*.tmp
+*.bak
+*.swp
+*.swo
+*.lock
+*.cache
+*.db
+Thumbs.db
+.DS_Store
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Azure & Build Artifacts
+.azure/
+publish/
+wwwroot/
