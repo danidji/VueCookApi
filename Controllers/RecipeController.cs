@@ -4,7 +4,7 @@ using VueCookApi.Services;
 
 namespace VueCookApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/recipes")]
     [ApiController]
     public class RecipesController : ControllerBase
     {
@@ -35,6 +35,14 @@ namespace VueCookApi.Controllers
         {
             var newRecipe = await _recipeService.CreateRecipeAsync(recipe);
             return CreatedAtAction(nameof(GetRecipe), new { id = newRecipe.Id }, newRecipe);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchRecipe(Guid id, [FromBody] RecipeUpdateDto updates)
+        {
+            var success = await _recipeService.PatchRecipeAsync(id, updates);
+            if (!success) return NotFound();
+            return NoContent();
         }
 
         [HttpPut("{id}")]

@@ -40,6 +40,31 @@ namespace VueCookApi.Services
             return true;
         }
 
+        public async Task<bool> PatchRecipeAsync(Guid id, RecipeUpdateDto updates)
+        {
+            var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe == null) return false;
+
+            var recipeType = typeof(Recipe);
+            var updateType = typeof(RecipeUpdateDto);
+
+            foreach (var property in updateType.GetProperties())
+            {
+                var updateValue = property.GetValue(updates);
+                if (updateValue is not null)
+                {
+                    var recipeProperty = recipeType.GetProperty(property.Name);
+                    if (recipeProperty != null && recipeProperty.CanWrite)
+                    {
+                        recipeProperty.SetValue(recipe, updateValue);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> DeleteRecipeAsync(Guid id)
         {
             var recipe = await _context.Recipes.FindAsync(id);
