@@ -12,12 +12,22 @@ var keyVaultUrl = builder.Configuration["keyVaultUrl"];
 if (!string.IsNullOrEmpty(keyVaultUrl))
 {
     var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-     Console.WriteLine($"client {client}"); 
-    KeyVaultSecret secret = client.GetSecret("DbConnectionString").Value;    
+    KeyVaultSecret secret = client.GetSecret("DbConnectionString").Value;
 
-     Console.WriteLine($"Secret récupéré : {secret.Value}"); 
     builder.Configuration["ConnectionStrings:DefaultConnection"] = secret.Value;
 }
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
 
 
 builder.Services.AddControllers();
@@ -25,7 +35,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<VueCookContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                 maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorNumbersToAdd: null);
+        }
+    ));
 builder.Services.AddScoped<RecipeService>();
 
 builder.Services.AddAuthentication();
@@ -40,7 +58,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); 
+app.UseAuthentication();
+app.UseCors("AllowLocalhost");
 app.UseAuthorization();
 app.MapControllers();
 
