@@ -1,4 +1,4 @@
-# API de Gestion de Recettes de Cuisine
+# VueCookApi
 
 ## Description
 
